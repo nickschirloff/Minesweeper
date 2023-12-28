@@ -7,5 +7,7 @@ public class Minesweeper {
         GameLogic gl = new GameLogic(1);
         gl.generateBoard();
         gl.generateMines();
+        gl.updateBoard();
+        gl.printBoard();
     }
 }
