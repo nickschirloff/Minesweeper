@@ -13,8 +13,8 @@ public class Cell extends JButton {
         addActionListener(e -> reveal());
     }
 
-    public void setValue(int value) { this.value = value; }
     public void reveal() { setText(Integer.toString(value)); }
     public void flagCell() { isFlagged = !isFlagged; }
+    public void updateValue() { this.value += 1; }
     public int getValue() { return this.value; }
 }
