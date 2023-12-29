@@ -2,18 +2,18 @@ package view;
 
 import view.menu.GameMenu;
 import view.panels.*;
-
-import java.awt.BorderLayout;
-
-import javax.swing.BoxLayout;
+import models.GameInstance;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import java.awt.BorderLayout;
 
 public class Window extends JFrame {
 
-    private int windowWidth = 600;
+    private int windowWidth = 615;
     private int windowHeight = 800;
-    private SettingsPanel sp;
-    private GamePanel gp;
+    private GameInstance gi;
 
     public Window() {
         setTitle("Minesweeper");
@@ -21,22 +21,29 @@ public class Window extends JFrame {
         setSize(windowWidth, windowHeight);
         setResizable(false);
         setJMenuBar(new GameMenu(this));
-        //setLayout(null);
         setLayout(new BorderLayout());
 
-        sp = new SettingsPanel(this);
-        add(sp, BorderLayout.PAGE_START);
+        gi = new GameInstance(GameInstance.DIFFICULTY_EASY);
 
-        gp = new GamePanel(this);
+        MineDetailPanel mp = new MineDetailPanel(this, 0);
+        add(mp, BorderLayout.LINE_START);
+
+        Icon mineIcon = new ImageIcon("src\\assets\\mine.png");
+        JButton startButton = new JButton(mineIcon);
+        add(startButton, BorderLayout.CENTER);
+
+        RevealBoardPanel rp = new RevealBoardPanel(this);
+        add(rp, BorderLayout.LINE_END);
+
+        GamePanel gp = new GamePanel(this);
+        gp.populatePanel(gi.getBoard());
         add(gp, BorderLayout.PAGE_END);
 
-        pack();
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
     public void refresh() {
-        sp.refresh();
         repaint();
     }
 
@@ -51,5 +58,6 @@ public class Window extends JFrame {
 
     public int getWindowWidth() { return windowWidth; }
     public int getWindowHeight() { return windowHeight; }
+    public GameInstance getGameInstance() { return gi; }
 
 }

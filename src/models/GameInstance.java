@@ -3,8 +3,12 @@ package models;
 import java.util.Arrays;
 import java.util.Random;
 
-public class GameLogic {
+public class GameInstance {
     
+    public static final int DIFFICULTY_EASY = 1;
+    public static final int DIFFICULTY_MEDIUM = 2;
+    public static final int DIFFICULTY_HARD = 3;
+
     private int difficulty;
     private int numMines;
     private int rows, cols;
@@ -12,10 +16,17 @@ public class GameLogic {
     private Integer[] minesPos;
     Random rand = new Random();
 
-    public GameLogic(int difficulty) {
+    public GameInstance(int difficulty) {
         this.difficulty = difficulty;
         rows = 10;
         cols = 8 + (difficulty * 2);
+        newGame();
+    }
+
+    public void newGame() {
+        generateBoard();
+        generateMines();
+        updateBoard();
     }
 
     public void generateBoard() {
@@ -44,7 +55,7 @@ public class GameLogic {
         Integer temp;
         for(int i = 0; i < numMines; i++)
         {
-            temp = rand.nextInt(bound) + 1;
+            temp = rand.nextInt(bound);
             // TODO: Add check for first cell clicked
             while(Arrays.asList(minesPos).contains(temp))
             {
@@ -52,18 +63,16 @@ public class GameLogic {
             }
             minesPos[i] = temp;
         }
-        printArray(minesPos);
+        // printArray(minesPos);
     }
 
     public void updateBoard() {
+        printArray(minesPos);
         for(int i = 0; i < minesPos.length; i++)
         {
             int x = minesPos[i]/rows;
             int y = minesPos[i]%cols;
             board[x][y].setIsMine(true);
-            System.out.println("X: " + x);
-            System.out.println("Y: " + y);
-            board[x][y].updateValue(-1);
             updateNeighbors(x, y);
         }
     }
@@ -95,6 +104,25 @@ public class GameLogic {
         return board[x][y].getIsMine();
     }
 
+
+    public void revealBoard() {
+        for(int i = 0; i < rows; i++)
+        {
+            for(int j = 0; j < cols; j++)
+            {
+                board[i][j].reveal();
+            }
+        }
+    }
+
+    public Cell[][] getBoard() { return board; }
+
+
+
+
+    /*
+     * Debug methods
+     */
 
     public void printBoard() {
         for(int i = 0; i < rows; i++)
