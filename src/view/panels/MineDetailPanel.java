@@ -7,14 +7,12 @@ import javax.swing.JLabel;
 
 public class MineDetailPanel extends JPanel {
     
-    private Window frame;
     private JLabel flavorTextLabel;
     private JLabel totalMinesLabel;
-    public MineDetailPanel(Window frame, int initialMines) {
-        this.frame = frame;
+    public MineDetailPanel(Window frame) {
         setPreferredSize(new Dimension(frame.getWidth()/3, 300));
         flavorTextLabel = new JLabel("Total Mines:");
-        totalMinesLabel = new JLabel(Integer.toString(initialMines));
+        totalMinesLabel = new JLabel();
 
         add(flavorTextLabel);
         add(totalMinesLabel);

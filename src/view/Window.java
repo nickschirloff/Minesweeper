@@ -1,5 +1,6 @@
 package view;
 
+import view.alerts.GameStatusAlert;
 import view.menu.GameMenu;
 import view.panels.*;
 import models.GameInstance;
@@ -11,7 +12,8 @@ import java.awt.BorderLayout;
 
 public class Window extends JFrame {
 
-    private int windowWidth = 615;
+    // Base width/height for an easy difficulty game, which the default difficulty
+    private int windowWidth = 600;
     private int windowHeight = 800;
     private GameInstance gi;
     private MineDetailPanel mp;
@@ -26,14 +28,15 @@ public class Window extends JFrame {
         setJMenuBar(new GameMenu(this));
         setLayout(new BorderLayout());
 
-        gi = new GameInstance(GameInstance.DIFFICULTY_EASY);
+        gi = new GameInstance(this, 1);
 
-        mp = new MineDetailPanel(this, 0);
+        mp = new MineDetailPanel(this);
         mp.updateMineCount(gi.getMineCount());
         add(mp, BorderLayout.LINE_START);
 
         Icon mineIcon = new ImageIcon("src\\assets\\mine.png");
         JButton startButton = new JButton(mineIcon);
+        startButton.addActionListener(e -> newGame(gi.getDifficulty()));
         add(startButton, BorderLayout.CENTER);
 
         rp = new RevealBoardPanel(this);
@@ -47,30 +50,26 @@ public class Window extends JFrame {
         setVisible(true);
     }
 
-    public void refresh(int newDifficulty) {
-                System.out.println();
-        System.out.println();
-        System.out.println();
-        gi = new GameInstance(newDifficulty);
-        //gi.newGame();
+    public void newGame(int difficulty) {
+        gi.newGame(difficulty);
         mp.updateMineCount(gi.getMineCount());
-        gp.reset();
+        gp.removeAll();
         gp.populatePanel(gi.getBoard());
 
+        revalidate();
         repaint();
     }
 
+    public void endGame(boolean victory) {
+        GameStatusAlert gs = new GameStatusAlert(this, victory);
+    }
+
+    public int getWindowWidth() { return windowWidth; }
     public void setWindowWidth(int newWidth) { 
         windowWidth = newWidth;
         setSize(newWidth, windowHeight);
     }
-    public void setWindowHeight(int newHeight) { 
-        windowHeight = newHeight;
-        setSize(windowWidth, newHeight);
-    }
 
-    public int getWindowWidth() { return windowWidth; }
-    public int getWindowHeight() { return windowHeight; }
     public GameInstance getGameInstance() { return gi; }
 
 }

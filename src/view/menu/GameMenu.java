@@ -45,16 +45,16 @@ public class GameMenu extends JMenuBar implements ActionListener {
         String s = e.getActionCommand();
         switch(s) {
             case "Easy":
-                frame.setWindowWidth(900);
-                frame.refresh(1);
+                frame.setWindowWidth(600);
+                frame.newGame(1);
             break;
             case "Medium":
                 frame.setWindowWidth(735);
-                frame.refresh(2);
+                frame.newGame(2);
             break;
             case "Hard":
                 frame.setWindowWidth(855);
-                frame.refresh(3);
+                frame.newGame(3);
             break;
             case "Exit":
                 frame.dispose();

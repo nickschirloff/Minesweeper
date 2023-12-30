@@ -1,41 +1,46 @@
 package models;
 
+import view.Window;
 import java.util.Arrays;
 import java.util.Random;
 
 public class GameInstance {
-    
-    public static final int DIFFICULTY_EASY = 1;
-    public static final int DIFFICULTY_MEDIUM = 2;
-    public static final int DIFFICULTY_HARD = 3;
 
+    private Window frame;
     private int difficulty;
     private int numMines;
+    private int hiddenMineCount;
+    private int revealedCellCount;
     private int rows, cols;
+    private boolean gameIsOver = false;
     private Cell[][] board;
     private Integer[] minesPos;
     Random rand = new Random();
 
-    public GameInstance(int difficulty) {
+    public GameInstance(Window frame, int difficulty) {
+        this.frame = frame;
         this.difficulty = difficulty;
         rows = 10;
-        cols = 8 + (difficulty * 2);
-        newGame();
+        newGame(difficulty);
     }
 
-    public void newGame() {
+    public void newGame(int newDifficulty) {
+        this.difficulty = newDifficulty;
+        cols = 8 + (difficulty * 2);
+        gameIsOver = false;
         generateBoard();
         generateMines();
         updateBoard();
     }
 
     public void generateBoard() {
+        revealedCellCount = rows * cols;
         board = new Cell[rows][cols];
         for(int i = 0; i < rows; i++)
         {
             for(int j = 0; j < cols; j++)
             {
-                board[i][j] = new Cell();
+                board[i][j] = new Cell(this);
             }
         }
     }
@@ -50,6 +55,7 @@ public class GameInstance {
          */
         numMines = (6 + (difficulty * 2)) + rand.nextInt(difficulty * 4) + 1;
         minesPos = new Integer[numMines];
+        hiddenMineCount = numMines;
 
         int bound = 10 * (8 + (difficulty * 2));
         Integer temp;
@@ -59,7 +65,7 @@ public class GameInstance {
             // TODO: Add check for first cell clicked
             while(Arrays.asList(minesPos).contains(temp))
             {
-                temp = rand.nextInt(bound) + 1;
+                temp = rand.nextInt(bound);
             }
             minesPos[i] = temp;
         }
@@ -67,26 +73,15 @@ public class GameInstance {
     }
 
     public void updateBoard() {
-        Arrays.sort(minesPos);
+        //Arrays.sort(minesPos);
+        int x, y;
         for(int i = 0; i < minesPos.length; i++)
         {
-            int x;
-            int y;
             x = minesPos[i] / (8 + (difficulty * 2));
-            // if(minesPos[i] >= 100) {
-            //     x = (minesPos[i] - 100)/(8 + (difficulty * 2));
-            // } else {
-            //     x = minesPos[i]/(8 + (difficulty * 2));
-            // }
             y = minesPos[i]%cols;
-            System.out.println("Value: " + minesPos[i]);
-            System.out.println("Placing at: " + x + "," + y);
             board[x][y].setIsMine(true);
             updateNeighbors(x, y);
         }
-        
-        printArray(minesPos);
-
     }
 
     /*
@@ -118,6 +113,7 @@ public class GameInstance {
 
 
     public void revealBoard() {
+        gameIsOver = true;
         for(int i = 0; i < rows; i++)
         {
             for(int j = 0; j < cols; j++)
@@ -127,18 +123,38 @@ public class GameInstance {
         }
     }
 
-    public Cell[][] getBoard() { 
+    public void updateHiddenMineCount(int val) {
+        hiddenMineCount += val;
+        if(hiddenMineCount == 0) {
+            frame.endGame(true);
+        }
+    }
 
-        
-        return board; }
+    public void updateAndCheckCellCount() {
+        revealedCellCount--;
+        // if(((rows * cols) - revealedCellCount) == numMines)
+        // {
+        //     frame.endGame(true);
+        // }
+    }
+
+    public void gameOver() {
+        frame.endGame(false);
+    }
+
+    public Cell[][] getBoard() { return board; }
     public int getMineCount() { return numMines; }
+    public int getDifficulty() { return difficulty; }
+    public boolean getGameIsOver() { return gameIsOver; }
+
+
 
 
 
     /*
      * Debug methods
+     * 
      */
-
     public void printBoard() {
         for(int i = 0; i < rows; i++)
         {
@@ -156,7 +172,6 @@ public class GameInstance {
             System.out.println();
         }
     }
-
     public void printArray(Integer[] arr) {
         for(int i = 0; i < arr.length; i++)
         {
