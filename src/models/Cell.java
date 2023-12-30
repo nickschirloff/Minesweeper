@@ -17,6 +17,10 @@ public class Cell extends JButton {
 
     public void reveal() { 
         switch(value) {
+            case -1: 
+            setBackground(Color.BLACK);
+            setForeground(Color.WHITE);
+            break;
             case 1:
             setBackground(Color.LIGHT_GRAY);
             break;
@@ -28,10 +32,6 @@ public class Cell extends JButton {
             break;
             case 4:
             setBackground(Color.RED);
-            case 5:
-            setBackground(Color.BLACK);
-            setForeground(Color.WHITE);
-            break;
             default:
             break;
         }
@@ -46,7 +46,9 @@ public class Cell extends JButton {
     public void updateValue(int val) { 
         if(isMine) {
             // do nothing
+        } else {
+            this.value += val; }
+
         }
-        this.value += val; }
     public int getValue() { return this.value; }
 }

@@ -14,6 +14,9 @@ public class Window extends JFrame {
     private int windowWidth = 615;
     private int windowHeight = 800;
     private GameInstance gi;
+    private MineDetailPanel mp;
+    private RevealBoardPanel rp;
+    private GamePanel gp;
 
     public Window() {
         setTitle("Minesweeper");
@@ -25,17 +28,18 @@ public class Window extends JFrame {
 
         gi = new GameInstance(GameInstance.DIFFICULTY_EASY);
 
-        MineDetailPanel mp = new MineDetailPanel(this, 0);
+        mp = new MineDetailPanel(this, 0);
+        mp.updateMineCount(gi.getMineCount());
         add(mp, BorderLayout.LINE_START);
 
         Icon mineIcon = new ImageIcon("src\\assets\\mine.png");
         JButton startButton = new JButton(mineIcon);
         add(startButton, BorderLayout.CENTER);
 
-        RevealBoardPanel rp = new RevealBoardPanel(this);
+        rp = new RevealBoardPanel(this);
         add(rp, BorderLayout.LINE_END);
 
-        GamePanel gp = new GamePanel(this);
+        gp = new GamePanel(this);
         gp.populatePanel(gi.getBoard());
         add(gp, BorderLayout.PAGE_END);
 
@@ -43,7 +47,16 @@ public class Window extends JFrame {
         setVisible(true);
     }
 
-    public void refresh() {
+    public void refresh(int newDifficulty) {
+                System.out.println();
+        System.out.println();
+        System.out.println();
+        gi = new GameInstance(newDifficulty);
+        //gi.newGame();
+        mp.updateMineCount(gi.getMineCount());
+        gp.reset();
+        gp.populatePanel(gi.getBoard());
+
         repaint();
     }
 

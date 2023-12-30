@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
 import models.Cell;
 
@@ -15,10 +16,11 @@ public class GamePanel extends JPanel {
         this.frame = frame;
         setPreferredSize(getPreferredSize());
         setBackground(Color.GRAY);
-        setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        // setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     }
 
     public void populatePanel(Cell[][] board) {
+        setLayout(new GridLayout(board.length, board[0].length));
         for(int i = 0; i < board.length; i++)
         {
             for(int j = 0; j < board[i].length; j++)
@@ -29,6 +31,8 @@ public class GamePanel extends JPanel {
             }
         }
     }
+
+    public void reset() { removeAll(); }
 
     @Override
     public Dimension getPreferredSize() {

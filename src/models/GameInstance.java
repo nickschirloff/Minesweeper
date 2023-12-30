@@ -67,14 +67,26 @@ public class GameInstance {
     }
 
     public void updateBoard() {
-        printArray(minesPos);
+        Arrays.sort(minesPos);
         for(int i = 0; i < minesPos.length; i++)
         {
-            int x = minesPos[i]/rows;
-            int y = minesPos[i]%cols;
+            int x;
+            int y;
+            x = minesPos[i] / (8 + (difficulty * 2));
+            // if(minesPos[i] >= 100) {
+            //     x = (minesPos[i] - 100)/(8 + (difficulty * 2));
+            // } else {
+            //     x = minesPos[i]/(8 + (difficulty * 2));
+            // }
+            y = minesPos[i]%cols;
+            System.out.println("Value: " + minesPos[i]);
+            System.out.println("Placing at: " + x + "," + y);
             board[x][y].setIsMine(true);
             updateNeighbors(x, y);
         }
+        
+        printArray(minesPos);
+
     }
 
     /*
@@ -115,8 +127,11 @@ public class GameInstance {
         }
     }
 
-    public Cell[][] getBoard() { return board; }
+    public Cell[][] getBoard() { 
 
+        
+        return board; }
+    public int getMineCount() { return numMines; }
 
 
 

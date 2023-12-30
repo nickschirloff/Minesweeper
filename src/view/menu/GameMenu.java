@@ -46,13 +46,20 @@ public class GameMenu extends JMenuBar implements ActionListener {
         switch(s) {
             case "Easy":
                 frame.setWindowWidth(900);
-                frame.refresh();
+                frame.refresh(1);
+            break;
+            case "Medium":
+                frame.setWindowWidth(735);
+                frame.refresh(2);
+            break;
+            case "Hard":
+                frame.setWindowWidth(855);
+                frame.refresh(3);
             break;
             case "Exit":
                 frame.dispose();
             break;
         }
-        System.out.println(s);
     }
 
 }
