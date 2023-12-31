@@ -24,6 +24,10 @@ public class GameInstance {
         newGame(difficulty);
     }
 
+    /*
+     * 
+     * @param  newDifficulty  The new given difficulty to start a new game   
+     */
     public void newGame(int newDifficulty) {
         this.difficulty = newDifficulty;
         cols = 8 + (difficulty * 2);
@@ -69,17 +73,15 @@ public class GameInstance {
             }
             minesPos[i] = temp;
         }
-        // printArray(minesPos);
     }
 
     public void updateBoard() {
-        //Arrays.sort(minesPos);
         int x, y;
         for(int i = 0; i < minesPos.length; i++)
         {
             x = minesPos[i] / (8 + (difficulty * 2));
             y = minesPos[i]%cols;
-            board[x][y].setIsMine(true);
+            board[x][y].setIsMine();
             updateNeighbors(x, y);
         }
     }
@@ -97,7 +99,7 @@ public class GameInstance {
             {
                 if(isWithinBounds(x1, y1) && !isMine(x1, y1))
                 {
-                    board[x1][y1].updateValue(1);
+                    board[x1][y1].incrimentValue();
                 }
             }
         }
@@ -132,13 +134,14 @@ public class GameInstance {
 
     public void updateAndCheckCellCount() {
         revealedCellCount--;
-        // if(((rows * cols) - revealedCellCount) == numMines)
-        // {
-        //     frame.endGame(true);
-        // }
+        if(((rows * cols) - revealedCellCount) == numMines)
+        {
+            frame.endGame(true);
+        }
     }
 
     public void gameOver() {
+        revealBoard();
         frame.endGame(false);
     }
 
@@ -146,38 +149,4 @@ public class GameInstance {
     public int getMineCount() { return numMines; }
     public int getDifficulty() { return difficulty; }
     public boolean getGameIsOver() { return gameIsOver; }
-
-
-
-
-
-    /*
-     * Debug methods
-     * 
-     */
-    public void printBoard() {
-        for(int i = 0; i < rows; i++)
-        {
-            for(int j = 0; j < cols; j++)
-            {
-                switch(board[i][j].getValue()) {
-                    case -1:
-                    System.out.print(board[i][j].getValue() + " ");
-                    break;
-                    default:
-                    System.out.print(board[i][j].getValue() + "  ");
-                    break;
-                }
-            }
-            System.out.println();
-        }
-    }
-    public void printArray(Integer[] arr) {
-        for(int i = 0; i < arr.length; i++)
-        {
-            System.out.print(arr[i] +  " ");
-        }
-        System.out.println();
-    }
-
 }

@@ -30,6 +30,7 @@ public class Window extends JFrame {
 
         gi = new GameInstance(this, 1);
 
+        
         mp = new MineDetailPanel(this);
         mp.updateMineCount(gi.getMineCount());
         add(mp, BorderLayout.LINE_START);

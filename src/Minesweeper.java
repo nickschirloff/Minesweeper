@@ -5,9 +5,3 @@ public class Minesweeper {
         new Window();
     }
 }
-
-
-/*
- * TODO:
- * - Remove nearby empty cells when clicking on a 'zero' cell
- */

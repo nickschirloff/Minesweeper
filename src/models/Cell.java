@@ -3,6 +3,8 @@ package models;
 import controllers.CellMouseHandler;
 import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class Cell extends JButton {
@@ -18,59 +20,102 @@ public class Cell extends JButton {
         addMouseListener(new CellMouseHandler(this));
     }
 
-    public void reveal() { 
-        if(!gi.getGameIsOver()) {
-            gi.updateAndCheckCellCount();
+    /*
+     * The next two methods are similar in functionality, but are called under separate conditions.
+     * 
+     * show() is called when a cell is clicked, and is used when we are considering the variables
+     * necessary to calculate if the user wins. 
+     * reveal() is called when the game is over, or the user clicks the 'give up' button, and
+     * such variables are not necessary.
+     * 
+     * In other words, show() is called during the game, reveal() is called when the game is over.
+     * Could maybe combined these methods, but I kept them separate for better clarity on my end
+     */
+    public void show() {
+        setText(Integer.toString(value));
+        colorCell();
+        if(isMine) {
+            gi.gameOver();
         }
-        if(isFlagged) {
-            setIcon(null);
-        }
-        switch(value) {
-            case -1: 
-                setBackground(Color.BLACK);
-                setForeground(Color.WHITE);
-                setText(Integer.toString(value)); 
-            break;
-            case 0:
-                setText(""); 
-                break;
-            case 1:
-                setBackground(Color.LIGHT_GRAY);
-                setText(Integer.toString(value)); 
-            break;
-            case 2:
-                setBackground(Color.YELLOW);
-                setText(Integer.toString(value)); 
-            break;
-            case 3:
-                setBackground(Color.ORANGE);
-                setText(Integer.toString(value)); 
-            break;
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-                setBackground(Color.RED);
-                setText(Integer.toString(value)); 
-            default:
-            break;
-        }
+        gi.updateAndCheckCellCount();
     }
+
+    public void reveal() { 
+        setText(Integer.toString(value));
+        colorCell();
+    }
+
+    /*
+     * Colors a cell based on its value when it is revealed.
+     */
+    public void colorCell() {
+        switch(value) {
+        case -1: 
+            setBackground(Color.BLACK);
+            setForeground(Color.WHITE);
+            setText(Integer.toString(value)); 
+        break;
+        case 0:
+            setText(""); 
+            break;
+        case 1:
+            setBackground(Color.LIGHT_GRAY);
+            setText(Integer.toString(value)); 
+        break;
+        case 2:
+            setBackground(Color.YELLOW);
+            setText(Integer.toString(value)); 
+        break;
+        case 3:
+            setBackground(Color.ORANGE);
+            setText(Integer.toString(value)); 
+        break;
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+            setBackground(Color.RED);
+            setText(Integer.toString(value)); 
+        default:
+        break;
+        }
+    } 
     
-    public void flagCell() { isFlagged = !isFlagged; }
-    public void setIsMine(boolean val) { 
-        isMine = val;
+    /*
+     * Inverts the flag status of a cell, adding or removing an icon of a flag to the cell
+     */
+    public void flagCell() { 
+        if(isFlagged) {
+            isFlagged = false;
+            setIcon(null);
+            setText("?");
+        } else {
+            isFlagged = true;
+            Icon flagIcon = new ImageIcon("src\\assets\\flag.png");
+            setIcon(flagIcon);
+            setText("");
+        }
+        
+    }
+
+    /*
+     * Sets a flag to indicate a cell is a mine, and updates its value to -1 to represent that
+     */
+    public void setIsMine() { 
+        isMine = true;
         value = -1;
     }
-    public boolean getIsMine() { return isMine; }
-    public void updateValue(int val) { 
+    /*
+     * Incriments the value of a cell if it is around a mine, but is not a mine itself.
+     * For instance, if this cell is near two mines, this function will be called twice,
+     * incrimenting its value by two to represent that.
+     */
+    public void incrimentValue() { 
         if(!isMine) {
-            this.value += val;
+            this.value += 1;
         }
     }
-    public int getValue() { return this.value; }
-    public boolean getIsFlagged() { return this.isFlagged; }
 
     public void emitGameOver() {
         gi.gameOver();
@@ -78,6 +123,7 @@ public class Cell extends JButton {
     public void updateHiddenMineCount(int value) {
         gi.updateHiddenMineCount(value);
     } 
-
-
+    public boolean getIsFlagged() { return this.isFlagged; }
+    public boolean getIsMine() { return isMine; }
+    public int getValue() { return this.value; }
 }

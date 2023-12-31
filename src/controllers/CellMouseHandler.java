@@ -3,9 +3,6 @@ package controllers;
 import models.Cell;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 public class CellMouseHandler extends MouseAdapter {
@@ -17,35 +14,31 @@ public class CellMouseHandler extends MouseAdapter {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(SwingUtilities.isRightMouseButton(e) && cell.getIsMine()) {
-            Icon flagIcon = new ImageIcon("src\\assets\\flag.png");
-            cell.setIcon(flagIcon);
-            cell.setText("");
-            cell.updateHiddenMineCount(-1);
-        } else if(SwingUtilities.isRightMouseButton(e) && !cell.getIsMine()) {
-            Icon flagIcon = new ImageIcon("src\\assets\\flag.png");
-            cell.setIcon(flagIcon);
-            cell.setText("");
-        } 
-
-        if(SwingUtilities.isRightMouseButton(e) && cell.getIsFlagged() && cell.getIsMine()) {
-            cell.setIcon(null);
-            cell.setText("?");
-            cell.updateHiddenMineCount(1);
-        } else if(SwingUtilities.isRightMouseButton(e) && cell.getIsMine()) {
-            cell.setIcon(null);
-            cell.setText("?");
-        } else if(SwingUtilities.isRightMouseButton(e) && !cell.getIsFlagged()) {
-            cell.flagCell();
-            Icon flagIcon = new ImageIcon("src\\assets\\flag.png");
-            cell.setIcon(flagIcon);
+        // Neatly handling which mouse input is received
+        if(SwingUtilities.isRightMouseButton(e)) {
+            handleRightClick();
+        } else {
+            handleOtherClick();
         }
+    }
 
-        if(SwingUtilities.isLeftMouseButton(e) && cell.getIsMine()) {
-            cell.reveal();
+    public void handleRightClick() {
+        cell.flagCell();
+        // If the cell is a mine, and was not flagged beforehand
+        if(cell.getIsMine() && cell.getIsFlagged()) {
+            cell.updateHiddenMineCount(-1);
+        } else if(cell.getIsMine() && !cell.getIsFlagged()) { // If the cell is a mine, and was flagged beforehand
+            cell.updateHiddenMineCount(1);
+        }
+    }
+
+    public void handleOtherClick() {
+        if(cell.getIsFlagged()) {
+            // do nothing
+        } else if(cell.getIsMine()) {
             cell.emitGameOver();
-        } else if(SwingUtilities.isLeftMouseButton(e)) {
-            cell.reveal();
+        } else {
+            cell.show();
         }
     }
     
