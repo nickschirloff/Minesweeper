@@ -15,7 +15,11 @@ public class CellMouseHandler extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         // Neatly handling which mouse input is received
-        if(SwingUtilities.isRightMouseButton(e)) {
+        if(cell.checkGameOver()) {
+            // if the game is over, we don't want any action to be
+            // handled, so we do nothing here
+            return;
+        } else if(SwingUtilities.isRightMouseButton(e)) {
             handleRightClick();
         } else {
             handleOtherClick();
@@ -34,10 +38,11 @@ public class CellMouseHandler extends MouseAdapter {
 
     public void handleOtherClick() {
         if(cell.getIsFlagged()) {
-            // do nothing
+            return;
         } else if(cell.getIsMine()) {
             cell.emitGameOver();
         } else {
+            cell.setIsRevealed(true);
             cell.show();
         }
     }

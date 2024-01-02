@@ -9,8 +9,7 @@ public class GameInstance {
     private Window frame;
     private int difficulty;
     private int numMines;
-    private int hiddenMineCount;
-    private int revealedCellCount;
+    private int hiddenMineCount, unrevealedCellCount;
     private int rows, cols;
     private boolean gameIsOver = false;
     private Cell[][] board;
@@ -19,13 +18,14 @@ public class GameInstance {
 
     public GameInstance(Window frame, int difficulty) {
         this.frame = frame;
-        this.difficulty = difficulty;
         rows = 10;
         newGame(difficulty);
     }
 
     /*
-     * 
+     *  Starts a new game. Sets the size of amount of columns for the board based on the given difficulty,
+     *  and calls subsequent methods to initialize the game elements.
+     *  
      * @param  newDifficulty  The new given difficulty to start a new game   
      */
     public void newGame(int newDifficulty) {
@@ -37,8 +37,16 @@ public class GameInstance {
         updateBoard();
     }
 
+    /*
+     * Creates a new board with a size based on the set difficulty. Iterates over the array to initialize
+     * the cells at each index. Also initializes unrevealedCellCount, a variable helps keep track of win
+     * conditions.
+     * 
+     * @param   none
+     * @return  none
+     */
     public void generateBoard() {
-        revealedCellCount = rows * cols;
+        unrevealedCellCount = rows * cols;
         board = new Cell[rows][cols];
         for(int i = 0; i < rows; i++)
         {
@@ -49,6 +57,13 @@ public class GameInstance {
         }
     }
 
+    /*
+     * Generates a random amount of mines based on the set difficulty, and populates an array 
+     * with randomly chosen positions for the number of mines.
+     * 
+     * @param   none
+     * @return  none
+     */
     public void generateMines() {
         /*
          * (6 + (difficulty * 2))
@@ -75,23 +90,36 @@ public class GameInstance {
         }
     }
 
+    /*
+     * Iterates through the list of mines, and updates the value surrounding cells.
+     * For example, if cell is near two mines, its value will become two to reflect it.
+     *  
+     * @param   none
+     * @return  none
+     */
     public void updateBoard() {
         int x, y;
         for(int i = 0; i < minesPos.length; i++)
         {
             x = minesPos[i] / (8 + (difficulty * 2));
-            y = minesPos[i]%cols;
+            y = minesPos[i] % cols;
             board[x][y].setIsMine();
             updateNeighbors(x, y);
         }
     }
 
     /*
+     * Takes the x and y position of a cell within the board, and incriments the value of cells
+     * in a 3x3 area around it.
+     * 
      * Credit to TorbenPutkonen on StackOverflow for the basis of the functions
      * to update value of mines around cells
      * https://codereview.stackexchange.com/questions/248530/minesweeper-bombcounts
+     * 
+     * @param   x   The x position of the mine within the board 
+     * @param   y   The y position of the mine within the board
+     * @return  none
      */
-
     public void updateNeighbors(int x, int y) {
         for(int x1 = x - 1; x1 <= x + 1; x1++)
         {
@@ -113,7 +141,12 @@ public class GameInstance {
         return board[x][y].getIsMine();
     }
 
-
+    /*
+     * Iterates through the board, revealing the value of each cell
+     * 
+     * @param   none
+     * @return  none
+     */
     public void revealBoard() {
         gameIsOver = true;
         for(int i = 0; i < rows; i++)
@@ -125,6 +158,16 @@ public class GameInstance {
         }
     }
 
+    /*
+     * Updates the hidden win condition that keeps track of whether a user has flagged
+     * all cells that contain a mine. If all mine cells are flagged, the user has won.
+     * 
+     * Called when a mine cell is flagged (right-clicked). Subtracts one from the count
+     * if the cell was not flagged already, and adds one if it was flagged.
+     * 
+     * @param   val The value to add 
+     * @return  none
+     */
     public void updateHiddenMineCount(int val) {
         hiddenMineCount += val;
         if(hiddenMineCount == 0) {
@@ -132,9 +175,18 @@ public class GameInstance {
         }
     }
 
+    /*
+     * Another value to check for win conditions. When a cell is left-clicked, this
+     * function is called, removing one from the unrevealed cell count. If the number
+     * of remaining cells is equal to the number of mines, this means the user has won
+     * the game.W
+     * 
+     * @param   none
+     * @return  none
+     */
     public void updateAndCheckCellCount() {
-        revealedCellCount--;
-        if(((rows * cols) - revealedCellCount) == numMines)
+        unrevealedCellCount--;
+        if(unrevealedCellCount == numMines)
         {
             frame.endGame(true);
         }
