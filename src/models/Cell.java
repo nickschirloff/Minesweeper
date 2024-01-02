@@ -98,7 +98,7 @@ public class Cell extends JButton {
             setText("?");
         } else {
             isFlagged = true;
-            Icon flagIcon = new ImageIcon("src\\assets\\flag.png");
+            Icon flagIcon = new ImageIcon("Minesweeper\\src\\assets\\flag.png");
             setIcon(flagIcon);
             setText("");
         }

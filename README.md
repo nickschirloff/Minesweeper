@@ -22,7 +22,7 @@ My first iteration will be added under a separate branch, minus some irrelevant 
 - [ ] Ensure first cell clicked is not a mine
 ## Installation
 
-Install Java >21.0.1, and then clone the repository.
+Install Java >=21.0.1, and then clone the repository.
 
 If you just want the current version:
 

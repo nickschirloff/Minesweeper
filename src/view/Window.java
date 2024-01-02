@@ -34,7 +34,7 @@ public class Window extends JFrame {
         mp.updateMineCount(gi.getMineCount());
         add(mp, BorderLayout.LINE_START);
 
-        Icon mineIcon = new ImageIcon("src\\assets\\mine.png");
+        Icon mineIcon = new ImageIcon("Minesweeper\\src\\assets\\mine.png");
         JButton startButton = new JButton(mineIcon);
         startButton.addActionListener(e -> newGame(gi.getDifficulty()));
         add(startButton, BorderLayout.CENTER);
